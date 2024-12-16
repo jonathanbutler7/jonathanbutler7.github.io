@@ -1,1 +1,162 @@
-Hello World
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Go Chat App</title>
+  </head>
+  <style>
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      list-style: none;
+    }
+    p {
+      margin: 0;
+    }
+    section {
+      display: flex;
+      flex-direction: column;
+      border: 5px solid pink;
+      flex: 1;
+      margin: 4px;
+    }
+    button {
+      color: #fff;
+      background-color: gray; /* Primary color */
+      border: none;
+      border-radius: 4px; /* Rounded corners */
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      transition: background-color 0.3s ease, transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      background-color: gainsboro;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+    .chat-window {
+      border: 1px solid gainsboro;
+      margin: 4px;
+      flex: 1;
+    }
+  </style>
+  <body>
+    <h1>Ws stuff</h1>
+    <div style="margin-bottom: 8px">
+      <button id="join-room" onclick="joinRoom()">User 3 Join Room A</button>
+      <button id="leave-room" onclick="leaveRoom()">User 3 Leave Room A</button>
+      <button onclick="closeWebsocket()">Disconnect Websocket 4</button>
+      <button onclick="reopenWebsocket()">Connect Websocket 4</button>
+    </div>
+    <div style="display: flex">
+      <section>
+        <h5 style="margin: 0">Chat Room A</h5>
+        <div style="display: flex">
+          <div class="chat-window">
+            <p>user 1 notifications</p>
+            <button id="broadcast-1" onclick="sendMessage()">Broadcast</button>
+            <ul id="messages-1"></ul>
+          </div>
+          <div class="chat-window">
+            <p>user 2 notifications</p>
+            <button id="broadcast-2" onclick="sendMessage2()">Broadcast</button>
+            <ul id="messages-2"></ul>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h5 style="margin: 0">Chat Room B</h5>
+        <div style="display: flex">
+          <div class="chat-window">
+            <p>user 3 notifications</p>
+            <button id="broadcast-3" onclick="sendMessage3()">Broadcast</button>
+            <ul id="messages-3"></ul>
+          </div>
+          <div class="chat-window">
+            <p>user 4 notifications</p>
+            <button id="broadcast-4" onclick="sendMessage4()">Broadcast</button>
+            <ul id="messages-4"></ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      function initWs(messagesId, userId, roomId) {
+        const messages = document.getElementById(messagesId);
+        const url = `ws://localhost:3000/ws/?userId=${userId}&roomId=${roomId}`;
+        const ws = new WebSocket(url);
+        ws.onmessage = function (event) {
+          const li = document.createElement("li");
+          const data = JSON.parse(event.data);
+          li.innerText = data.content;
+          messages.appendChild(li);
+        };
+        return ws;
+      }
+
+      let ws1 = initWs("messages-1", "1", "A");
+      let ws2 = initWs("messages-2", "2", "A");
+      let ws3 = initWs("messages-3", "3", "B");
+      let ws4 = initWs("messages-4", "4", "B");
+
+      function joinRoom() {
+        const message = {
+          userId: "3",
+          type: "join",
+          roomId: "A",
+        };
+        ws1.send(JSON.stringify(message));
+      }
+      function leaveRoom() {
+        const message = {
+          userId: "3",
+          type: "leave",
+          roomId: "A",
+        };
+        ws1.send(JSON.stringify(message));
+      }
+
+      function sendMessage() {
+        ws1.send(JSON.stringify({ type: "message", content: "user 1" }));
+      }
+      function sendMessage2() {
+        ws2.send(JSON.stringify({ type: "message", content: "user 2" }));
+      }
+      function sendMessage3() {
+        ws3.send(JSON.stringify({ type: "message", content: "user 3" }));
+      }
+      function sendMessage4() {
+        ws4.send(JSON.stringify({ type: "message", content: "user 4" }));
+      }
+
+      // const button1 = document.getElementById("broadcast-1");
+      // const button2 = document.getElementById("broadcast-2");
+      // const button3 = document.getElementById("broadcast-3");
+      // const button4 = document.getElementById("broadcast-4");
+      // const joinRoomBtn = document.getElementById("join-room");
+      // const leaveRoomBtn = document.getElementById("leave-room");
+      // function testDelay(fn) {
+      //   setTimeout(() => {
+      //     fn();
+      //   }, 500);
+      // }
+      // testDelay(() => button1.click());
+      // testDelay(() => button2.click());
+      // testDelay(() => button3.click());
+      // testDelay(() => button4.click());
+      // testDelay(() => joinRoomBtn.click());
+      // testDelay(() => button1.click());
+      // testDelay(() => leaveRoomBtn.click());
+      // testDelay(() => button1.click());
+      // testDelay(() => button3.click());
+    </script>
+  </body>
+</html>
