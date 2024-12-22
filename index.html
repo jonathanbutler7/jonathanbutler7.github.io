@@ -52,8 +52,6 @@
     <div style="margin-bottom: 8px">
       <button id="join-room" onclick="joinRoom()">User 3 Join Room A</button>
       <button id="leave-room" onclick="leaveRoom()">User 3 Leave Room A</button>
-<!--       <button onclick="closeWebsocket()">Disconnect Websocket 4</button> -->
-<!--       <button onclick="reopenWebsocket()">Connect Websocket 4</button> -->
     </div>
     <div style="display: flex">
       <section>
@@ -89,9 +87,9 @@
     </div>
 
     <script>
-      function initWs(messagesId, userId, roomId) {
+      function initWs(messagesId, userId) {
         const messages = document.getElementById(messagesId);
-        const url = `ws://localhost:3000/ws/?userId=${userId}&roomId=${roomId}`;
+        const url = `ws://localhost:3000/ws/?userId=${userId}`;
         const ws = new WebSocket(url);
         ws.onmessage = function (event) {
           const li = document.createElement("li");
@@ -102,11 +100,23 @@
         return ws;
       }
 
-      let ws1 = initWs("messages-1", "1", "A");
-      let ws2 = initWs("messages-2", "2", "A");
-      let ws3 = initWs("messages-3", "3", "B");
-      let ws4 = initWs("messages-4", "4", "B");
-
+      let ws1 = initWs("messages-1", "1");
+      let ws2 = initWs("messages-2", "2");
+      let ws3 = initWs("messages-3", "3");
+      let ws4 = initWs("messages-4", "4");
+      function join(ws, userId, roomId) {
+        const message = {
+          userId,
+          type: "join",
+          roomId,
+        };
+        ws.send(JSON.stringify(message));
+      }
+      join(ws1, "1", "A")
+      join(ws2, "2", "A")
+      join(ws3, "3", "B")
+      join(ws4, "4", "B")
+      
       function joinRoom() {
         const message = {
           userId: "3",
