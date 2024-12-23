@@ -87,7 +87,7 @@
     </div>
 
     <script>
-      function initWs(messagesId, userId) {
+      function initWs(messagesId, userId, roomId) {
         const messages = document.getElementById(messagesId);
         const url = `ws://localhost:3000/ws/?userId=${userId}`;
         const ws = new WebSocket(url);
@@ -100,23 +100,25 @@
         return ws;
       }
 
-      let ws1 = initWs("messages-1", "1");
-      let ws2 = initWs("messages-2", "2");
-      let ws3 = initWs("messages-3", "3");
-      let ws4 = initWs("messages-4", "4");
+      let ws1 = initWs("messages-1", "1", "A");
+      let ws2 = initWs("messages-2", "2", "A");
+      let ws3 = initWs("messages-3", "3", "B");
+      let ws4 = initWs("messages-4", "4", "B");
       function join(ws, userId, roomId) {
         const message = {
           userId,
           type: "join",
           roomId,
         };
-        ws.send(JSON.stringify(message));
+        ws.onopen = () => {
+          ws.send(JSON.stringify(message));
+        };
       }
-      join(ws1, "1", "A")
-      join(ws2, "2", "A")
-      join(ws3, "3", "B")
-      join(ws4, "4", "B")
-      
+      join(ws1, "1", "A");
+      join(ws2, "2", "A");
+      join(ws3, "3", "B");
+      join(ws4, "4", "B");
+
       function joinRoom() {
         const message = {
           userId: "3",
@@ -135,38 +137,41 @@
       }
 
       function sendMessage() {
-        ws1.send(JSON.stringify({ type: "message", content: "user 1" }));
+        ws1.send(
+          JSON.stringify({
+            type: "message",
+            content: "user 1",
+            destination: "A",
+          })
+        );
       }
       function sendMessage2() {
-        ws2.send(JSON.stringify({ type: "message", content: "user 2" }));
+        ws2.send(
+          JSON.stringify({
+            type: "message",
+            content: "user 2",
+            destination: "A",
+          })
+        );
       }
       function sendMessage3() {
-        ws3.send(JSON.stringify({ type: "message", content: "user 3" }));
+        ws3.send(
+          JSON.stringify({
+            type: "message",
+            content: "user 3",
+            destination: "B",
+          })
+        );
       }
       function sendMessage4() {
-        ws4.send(JSON.stringify({ type: "message", content: "user 4" }));
+        ws4.send(
+          JSON.stringify({
+            type: "message",
+            content: "user 4",
+            destination: "B",
+          })
+        );
       }
-
-      // const button1 = document.getElementById("broadcast-1");
-      // const button2 = document.getElementById("broadcast-2");
-      // const button3 = document.getElementById("broadcast-3");
-      // const button4 = document.getElementById("broadcast-4");
-      // const joinRoomBtn = document.getElementById("join-room");
-      // const leaveRoomBtn = document.getElementById("leave-room");
-      // function testDelay(fn) {
-      //   setTimeout(() => {
-      //     fn();
-      //   }, 500);
-      // }
-      // testDelay(() => button1.click());
-      // testDelay(() => button2.click());
-      // testDelay(() => button3.click());
-      // testDelay(() => button4.click());
-      // testDelay(() => joinRoomBtn.click());
-      // testDelay(() => button1.click());
-      // testDelay(() => leaveRoomBtn.click());
-      // testDelay(() => button1.click());
-      // testDelay(() => button3.click());
     </script>
   </body>
 </html>
