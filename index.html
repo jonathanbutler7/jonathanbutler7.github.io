@@ -87,6 +87,7 @@
     </div>
 
     <script>
+      
       function initWs(messagesId, userId, roomId) {
         const messages = document.getElementById(messagesId);
         const url = `ws://localhost:3000/ws/?userId=${userId}`;
@@ -104,42 +105,48 @@
       let ws2 = initWs("messages-2", "2", "A");
       let ws3 = initWs("messages-3", "3", "B");
       let ws4 = initWs("messages-4", "4", "B");
+
       function join(ws, userId, roomId) {
-        const message = {
-          type: "join",
-          content: {
-            userId,
-            roomId,
-          },
-        };
         ws.onopen = () => {
-          ws.send(JSON.stringify(message));
+          ws.send(
+            JSON.stringify({
+              type: "join",
+              content: {
+                userId,
+                roomId,
+              },
+            })
+          );
         };
       }
+
       join(ws1, "1", "A");
       join(ws2, "2", "A");
       join(ws3, "3", "B");
       join(ws4, "4", "B");
 
       function joinRoom() {
-        const message = {
-          type: "join",
-          content: {
-            userId: "3",
-            roomId: "A",
-          },
-        };
-        ws1.send(JSON.stringify(message));
+        ws1.send(
+          JSON.stringify({
+            type: "join",
+            content: {
+              userId: "3",
+              roomId: "A",
+            },
+          })
+        );
       }
+
       function leaveRoom() {
-        const message = {
-          type: "leave",
-          content: {
-            userId: "3",
-            roomId: "A",
-          },
-        };
-        ws1.send(JSON.stringify(message));
+        ws1.send(
+          JSON.stringify({
+            type: "leave",
+            content: {
+              userId: "3",
+              roomId: "A",
+            },
+          })
+        );
       }
 
       function sendMessage() {
@@ -153,6 +160,7 @@
           })
         );
       }
+
       function sendMessage2() {
         ws2.send(
           JSON.stringify({
@@ -164,6 +172,7 @@
           })
         );
       }
+
       function sendMessage3() {
         ws3.send(
           JSON.stringify({
@@ -175,6 +184,7 @@
           })
         );
       }
+
       function sendMessage4() {
         ws4.send(
           JSON.stringify({
