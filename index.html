@@ -106,9 +106,11 @@
       let ws4 = initWs("messages-4", "4", "B");
       function join(ws, userId, roomId) {
         const message = {
-          userId,
           type: "join",
-          roomId,
+          content: {
+            userId,
+            roomId,
+          },
         };
         ws.onopen = () => {
           ws.send(JSON.stringify(message));
@@ -121,17 +123,21 @@
 
       function joinRoom() {
         const message = {
-          userId: "3",
           type: "join",
-          roomId: "A",
+          content: {
+            userId: "3",
+            roomId: "A",
+          },
         };
         ws1.send(JSON.stringify(message));
       }
       function leaveRoom() {
         const message = {
-          userId: "3",
           type: "leave",
-          roomId: "A",
+          content: {
+            userId: "3",
+            roomId: "A",
+          },
         };
         ws1.send(JSON.stringify(message));
       }
@@ -140,8 +146,10 @@
         ws1.send(
           JSON.stringify({
             type: "message",
-            content: "user 1",
-            destination: "A",
+            content: {
+              text: "user 1",
+              destination: "A",
+            },
           })
         );
       }
@@ -149,8 +157,10 @@
         ws2.send(
           JSON.stringify({
             type: "message",
-            content: "user 2",
-            destination: "A",
+            content: {
+              text: "user 2",
+              destination: "A",
+            },
           })
         );
       }
@@ -158,8 +168,10 @@
         ws3.send(
           JSON.stringify({
             type: "message",
-            content: "user 3",
-            destination: "B",
+            content: {
+              text: "user 3",
+              destination: "B",
+            },
           })
         );
       }
@@ -167,8 +179,10 @@
         ws4.send(
           JSON.stringify({
             type: "message",
-            content: "user 4",
-            destination: "B",
+            content: {
+              text: "user 4",
+              destination: "B",
+            },
           })
         );
       }
